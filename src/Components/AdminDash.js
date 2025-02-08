@@ -17,6 +17,8 @@ const AdminDash = () => {
       jobColor: "White",
       office: "400",
       status: "To-Do",
+      materialsOrdered: "No",
+      comments: ""
     },
     {
       jobNumber: 102,
@@ -30,8 +32,12 @@ const AdminDash = () => {
       jobColor: "Blue",
       office: "402",
       status: "In Progress",
+      materialsOrdered: "Yes",
+      comments: "Waiting for shipment."
     },
   ]);
+
+  
 
   const deleteJob = (index) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
@@ -39,7 +45,6 @@ const AdminDash = () => {
     }
   };
 
-  
   const getStatusColor = (status) => {
     switch (status) {
       case "To-Do":
@@ -52,9 +57,10 @@ const AdminDash = () => {
         return "black";
     }
   };
+
   return (
     <>
-   <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand>Kitchen Saver</Navbar.Brand>
           <Nav className="me-auto">
@@ -84,6 +90,8 @@ const AdminDash = () => {
               <th>Job Color</th>
               <th>Office</th>
               <th>Status</th>
+              <th>Materials Ordered</th>
+              <th>Comments</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -109,14 +117,43 @@ const AdminDash = () => {
                       setJobs(updatedJobs);
                     }}
                     style={{
-                        color: getStatusColor(job.status),
-                        fontWeight: "bold",
-                      }}
+                      color: getStatusColor(job.status),
+                      fontWeight: "bold",
+                    }}
                   >
                     <option value="To-Do">To-Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
                   </Form.Select>
+                </td>
+                <td>
+                  <Form.Select
+                    value={job.materialsOrdered}
+                    onChange={(e) => {
+                      const updatedJobs = [...jobs];
+                      updatedJobs[index].materialsOrdered = e.target.value;
+                      setJobs(updatedJobs);
+                    }}
+                    style={{
+                        color: job.materialsOrdered === "Yes" ? "green" : "red", // Change text color based on the value
+                        fontWeight: "bold",
+                      }}
+                  >
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </Form.Select>
+                </td>
+                <td>
+                  <Form.Control
+                    type="text"
+                    value={job.comments}
+                    placeholder="Add a comment"
+                    onChange={(e) => {
+                      const updatedJobs = [...jobs];
+                      updatedJobs[index].comments = e.target.value;
+                      setJobs(updatedJobs);
+                    }}
+                  />
                 </td>
                 <td>
                   <Button variant="danger" onClick={() => deleteJob(index)}>
