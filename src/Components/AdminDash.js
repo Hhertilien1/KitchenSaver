@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Table, Button, Form, Navbar, Nav, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AdminDash = () => {
@@ -44,11 +45,16 @@ const AdminDash = () => {
     installer: ""
   });
 
+  const [showModal, setShowModal] = useState(false); 
+
+
   const deleteJob = (index) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       setJobs(jobs.filter((_, i) => i !== index));
     }
   };
+  
+  
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -72,9 +78,21 @@ const AdminDash = () => {
     );
   });
 
+  const handleClearFilters = () => {
+    setFilters({
+      office: "",
+      status: "",
+      materialsOrdered: "",
+      installer: ""
+    });
+  };
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg">
+       <Navbar expand="lg" style={{ backgroundColor: '#641e1e' }}>
         <Container>
           <Navbar.Brand>Kitchen Saver</Navbar.Brand>
           <Nav className="me-auto">
@@ -132,9 +150,33 @@ const AdminDash = () => {
               onChange={(e) => setFilters({ ...filters, installer: e.target.value })}
             />
           </Col>
+          <Col className="d-flex align-items-center justify-content-start">
+            <Button variant="secondary" onClick={handleClearFilters} className="me-2">
+              Clear Filters
+            </Button>
+            <Button variant="info" onClick={handleShowModal}>
+              How to Use Filters
+            </Button>
+          </Col>
         </Row>
 
-        <Table striped bordered hover>
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>How to Use Filters</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              Use the filters to narrow down job results based on office, status, materials ordered, or installer. Simply select the desired filter options and the job table will update accordingly. You can combine multiple filters for more specific results.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Table striped bordered hover style={{ backgroundColor: '#641e1e', color: 'white' }}>
           <thead>
             <tr>
               <th>Job #</th>
