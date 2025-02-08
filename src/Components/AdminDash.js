@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Table, Button, Form, Navbar, Nav } from "react-bootstrap";
+import { Container, Table, Button, Form, Navbar, Nav, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -37,7 +37,12 @@ const AdminDash = () => {
     },
   ]);
 
-  
+  const [filters, setFilters] = useState({
+    office: "",
+    status: "",
+    materialsOrdered: "",
+    installer: ""
+  });
 
   const deleteJob = (index) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
@@ -58,6 +63,15 @@ const AdminDash = () => {
     }
   };
 
+  const filteredJobs = jobs.filter(job => {
+    return (
+      (filters.office === "" || job.office === filters.office) &&
+      (filters.status === "" || job.status === filters.status) &&
+      (filters.materialsOrdered === "" || job.materialsOrdered === filters.materialsOrdered) &&
+      (filters.installer === "" || job.installer.toLowerCase().includes(filters.installer.toLowerCase()))
+    );
+  });
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -75,6 +89,50 @@ const AdminDash = () => {
       <Container className="mt-4">
         <h1>Admin Dashboard - Manage Jobs and Teams</h1>
         <p>Efficiently track, update, and manage job details.</p>
+
+        {/* Filter Section */}
+        <Row className="mb-3">
+        <Col>
+            <Form.Select
+              value={filters.office}
+              onChange={(e) => setFilters({ ...filters, office: e.target.value })}
+            >
+              <option value="">Filter by Office</option>
+              <option value="400">400</option>
+              <option value="402">402</option>
+              <option value="403">403</option>
+            </Form.Select>
+          </Col>
+          <Col>
+            <Form.Select
+              value={filters.status}
+              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+            >
+              <option value="">Filter by Status</option>
+              <option value="To-Do">To-Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </Form.Select>
+          </Col>
+          <Col>
+            <Form.Select
+              value={filters.materialsOrdered}
+              onChange={(e) => setFilters({ ...filters, materialsOrdered: e.target.value })}
+            >
+              <option value="">Filter by Materials Ordered</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </Form.Select>
+          </Col>
+          <Col>
+            <Form.Control
+              type="text"
+              placeholder="Filter by Installer"
+              value={filters.installer}
+              onChange={(e) => setFilters({ ...filters, installer: e.target.value })}
+            />
+          </Col>
+        </Row>
 
         <Table striped bordered hover>
           <thead>
@@ -96,7 +154,7 @@ const AdminDash = () => {
             </tr>
           </thead>
           <tbody>
-            {jobs.map((job, index) => (
+            {filteredJobs.map((job, index) => (
               <tr key={job.jobNumber}>
                 <td>{job.jobNumber}</td>
                 <td>{job.jobName}</td>
@@ -135,7 +193,7 @@ const AdminDash = () => {
                       setJobs(updatedJobs);
                     }}
                     style={{
-                        color: job.materialsOrdered === "Yes" ? "green" : "red", // Change text color based on the value
+                        color: job.materialsOrdered === "Yes" ? "green" : "red",
                         fontWeight: "bold",
                       }}
                   >
