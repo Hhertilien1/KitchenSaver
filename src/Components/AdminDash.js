@@ -39,6 +39,19 @@ const AdminDash = () => {
     }
   };
 
+  
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "To-Do":
+        return "red";
+      case "In Progress":
+        return "orange";
+      case "Completed":
+        return "green";
+      default:
+        return "black";
+    }
+  };
   return (
     <>
    <Navbar bg="dark" variant="dark" expand="lg">
@@ -95,6 +108,10 @@ const AdminDash = () => {
                       updatedJobs[index].status = e.target.value;
                       setJobs(updatedJobs);
                     }}
+                    style={{
+                        color: getStatusColor(job.status),
+                        fontWeight: "bold",
+                      }}
                   >
                     <option value="To-Do">To-Do</option>
                     <option value="In Progress">In Progress</option>
